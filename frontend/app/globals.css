@@ -174,3 +174,186 @@ h1 {
 .error {
   color: #f87171;
 }
+
+/* ---------- shop & orders UI ---------- */
+
+.topnav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 52px;
+  background: #1e293b;
+  border-bottom: 1px solid #334155;
+}
+
+.topnav .brand {
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.topnav .links {
+  display: flex;
+  gap: 18px;
+}
+
+.topnav a {
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.topnav a:hover {
+  color: #e2e8f0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.product-card h2 {
+  margin: 0 0 4px;
+  font-size: 17px;
+}
+
+.price {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fbbf24;
+  margin: 4px 0;
+}
+
+.stock {
+  color: #94a3b8;
+  font-size: 13px;
+  margin: 0 0 12px;
+}
+
+.qty {
+  min-width: 28px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: #e2e8f0;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.buy-btn {
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 600;
+  padding: 0 16px;
+  cursor: pointer;
+}
+
+.buy-btn:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.buy-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ghost-btn {
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background: transparent;
+  color: #cbd5e1;
+  padding: 0 14px;
+  cursor: pointer;
+}
+
+.ghost-btn:hover:not(:disabled) {
+  background: #334155;
+}
+
+.ghost-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.order-card .order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.order-no {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  margin-right: 10px;
+}
+
+.badge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-pending_payment {
+  background: #78350f;
+  color: #fbbf24;
+}
+
+.badge-paid {
+  background: #14532d;
+  color: #4ade80;
+}
+
+.badge-closed {
+  background: #334155;
+  color: #cbd5e1;
+}
+
+.badge-refunded {
+  background: #1e3a8a;
+  color: #93c5fd;
+}
+
+.order-items {
+  margin: 8px 0;
+  padding-left: 18px;
+  color: #e2e8f0;
+  font-size: 14px;
+}
+
+.order-meta {
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+.actions {
+  gap: 8px;
+}
+
+.muted {
+  color: #94a3b8;
+}
+
+.error-text {
+  color: #f87171;
+  font-size: 14px;
+}

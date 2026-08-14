@@ -18,3 +18,26 @@ spring:
 
 server:
   port: 8080
+
+alipay:
+  sandbox: true
+  app-id: ${ALIPAY_APP_ID:}
+  private-key: ${ALIPAY_PRIVATE_KEY:}
+  alipay-public-key: ${ALIPAY_PUBLIC_KEY:}
+  notify-url: ${ALIPAY_NOTIFY_URL:http://localhost:8080/api/payments/alipay/notify}
+  return-url: ${ALIPAY_RETURN_URL:http://localhost:3000/orders}
+
+wechat:
+  mch-id: ${WECHAT_MCH_ID:}
+  app-id: ${WECHAT_APP_ID:}
+  private-key: ${WECHAT_PRIVATE_KEY:}
+  merchant-serial-no: ${WECHAT_MERCHANT_SERIAL_NO:}
+  api-v3-key: ${WECHAT_API_V3_KEY:}
+  notify-url: ${WECHAT_NOTIFY_URL:http://localhost:8080/api/payments/wechat/notify}
+
+payment:
+  # true = all channels can be completed locally with a "simulate pay" button
+  # (no merchant credentials needed); set to false to use real gateways
+  simulation-enabled: true
+  order-timeout-minutes: 15
+  return-url: ${PAYMENT_RETURN_URL:http://localhost:3000/orders}

@@ -5,8 +5,9 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * 开发期 CORS 配置：允许前端开发服务器跨域调用本后端。
- * 生产环境应替换为具体的域名白名单。
+ * CORS configuration for development: allows the frontend dev server
+ * to call this backend cross-origin.
+ * Replace with an explicit allowlist of domains in production.
  */
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {

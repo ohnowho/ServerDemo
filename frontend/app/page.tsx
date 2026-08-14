@@ -1,159 +1,102 @@
 "use client";
 
-import { useState } from "react";
-import { API_BASE } from "@/lib/api";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { getJson, postJson, type Order, type Product } from "@/lib/api";
 
-const METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"];
-const BODY_METHODS = ["POST", "PUT", "PATCH"];
-
-// 示例快捷入口：点击后自动填入表单，可随意增删
-const QUICK_LINKS = [
-  { method: "GET", path: "/api/users", body: "" },
-  { method: "POST", path: "/api/users", body: '{\n  "username": "bob",\n  "email": "bob@example.com"\n}' },
-  { method: "GET", path: "/api/users/1", body: "" },
-];
-
-interface ResponseState {
-  status: number | null;
-  statusText: string;
-  body: string;
-  error: string;
-  timeMs: number;
-}
+const DEMO_USER_ID = 1;
 
 export default function Page() {
-  const [method, setMethod] = useState("GET");
-  const [path, setPath] = useState("/api/users");
-  const [body, setBody] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<ResponseState>({
-    status: null,
-    statusText: "",
-    body: "",
-    error: "",
-    timeMs: 0,
-  });
+  const router = useRouter();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [quantity, setQuantity] = useState<Record<number, number>>({});
+  const [busyId, setBusyId] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  async function send(m: string, p: string, b: string) {
-    setLoading(true);
-    const start = performance.now();
+  useEffect(() => {
+    getJson<Product[]>("/api/products")
+      .then(setProducts)
+      .catch((e) => setError(e instanceof Error ? e.message : String(e)));
+  }, []);
+
+  async function buy(product: Product) {
+    const qty = quantity[product.id] ?? 1;
+    setBusyId(product.id);
+    setError(null);
     try {
-      const options: RequestInit = { method: m, headers: {} };
-      if (BODY_METHODS.includes(m) && b.trim()) {
-        options.headers = { "Content-Type": "application/json" };
-        options.body = b;
-      }
-      const res = await fetch(`${API_BASE}${p}`, options);
-      const text = await res.text();
-      setResponse({
-        status: res.status,
-        statusText: res.statusText,
-        body: formatBody(text),
-        error: "",
-        timeMs: Math.round(performance.now() - start),
+      const order = await postJson<Order>("/api/orders", {
+        userId: DEMO_USER_ID,
+        items: [{ productId: product.id, quantity: qty }],
       });
-    } catch (err) {
-      setResponse({
-        status: null,
-        statusText: "",
-        body: "",
-        error: `请求失败：${err instanceof Error ? err.message : err}（后端是否已启动？）`,
-        timeMs: Math.round(performance.now() - start),
-      });
+      router.push(`/pay/${order.orderNo}`);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
     } finally {
-      setLoading(false);
+      setBusyId(null);
     }
   }
 
-  function formatBody(text: string): string {
-    try {
-      return JSON.stringify(JSON.parse(text), null, 2);
-    } catch {
-      return text || "(空响应)";
-    }
+  if (error && products.length === 0) {
+    return (
+      <main className="container">
+        <h1>Shop</h1>
+        <p className="subtitle">Demo storefront (user {DEMO_USER_ID})</p>
+        <p className="error-text">Could not load products: {error}</p>
+      </main>
+    );
   }
 
   return (
     <main className="container">
-      <h1>API 控制台</h1>
+      <h1>Shop</h1>
       <p className="subtitle">
-        通用调试工具：选择方法、填写路径和 JSON，即可调用后端任何接口
+        Demo storefront (user {DEMO_USER_ID}) · payments via Alipay / WeChat Pay / credit card
       </p>
-
-      <div className="card">
-        <div className="row">
-          <select value={method} onChange={(e) => setMethod(e.target.value)}>
-            {METHODS.map((m) => (
-              <option key={m} value={m}>
-                {m}
-              </option>
-            ))}
-          </select>
-          <input
-            className="path-input"
-            value={path}
-            onChange={(e) => setPath(e.target.value)}
-            placeholder="/api/users"
-            spellCheck={false}
-          />
-          <button onClick={() => send(method, path, body)} disabled={loading}>
-            {loading ? "请求中..." : "发送"}
-          </button>
-        </div>
-
-        {BODY_METHODS.includes(method) && (
-          <textarea
-            className="body-input"
-            value={body}
-            onChange={(e) => setBody(e.target.value)}
-            placeholder='{"key": "value"}'
-            rows={4}
-            spellCheck={false}
-          />
-        )}
-
-        <div className="quick-links">
-          <span className="label">快捷入口：</span>
-          {QUICK_LINKS.map((q, i) => (
-            <button
-              key={i}
-              className="chip"
-              onClick={() => {
-                setMethod(q.method);
-                setPath(q.path);
-                setBody(q.body);
-                send(q.method, q.path, q.body);
-              }}
-            >
-              {q.method} {q.path}
-            </button>
-          ))}
-        </div>
+      {error && <p className="error-text">{error}</p>}
+      <div className="grid">
+        {products.map((product) => {
+          const qty = quantity[product.id] ?? 1;
+          const disabled = product.stock === 0 || busyId !== null;
+          return (
+            <div className="card product-card" key={product.id}>
+              <h2>{product.name}</h2>
+              <p className="price">¥{product.price}</p>
+              <p className="stock">Stock: {product.stock}</p>
+              <div className="row">
+                <button
+                  className="icon-btn"
+                  disabled={busyId !== null || qty <= 1}
+                  onClick={() =>
+                    setQuantity((q) => ({ ...q, [product.id]: Math.max(1, qty - 1) }))
+                  }
+                >
+                  −
+                </button>
+                <span className="qty">{qty}</span>
+                <button
+                  className="icon-btn"
+                  disabled={busyId !== null || qty >= product.stock}
+                  onClick={() =>
+                    setQuantity((q) => ({ ...q, [product.id]: Math.min(product.stock, qty + 1) }))
+                  }
+                >
+                  +
+                </button>
+                <button
+                  className="buy-btn"
+                  disabled={disabled}
+                  onClick={() => buy(product)}
+                >
+                  {busyId === product.id ? "Buying…" : "Buy"}
+                </button>
+              </div>
+            </div>
+          );
+        })}
       </div>
-
-      <div className="card response-card">
-        <div className="response-header">
-          <span className="label">响应</span>
-          {response.status !== null && (
-            <span className={`status status-${statusClass(response.status)}`}>
-              {response.status} {response.statusText}
-              <span className="time">· {response.timeMs}ms</span>
-            </span>
-          )}
-        </div>
-        {response.error ? (
-          <pre className="error">{response.error}</pre>
-        ) : (
-          <pre className="response-body">{response.body}</pre>
-        )}
-      </div>
+      {products.length === 0 && !error && (
+        <p className="subtitle">No products yet — create one via the API Console.</p>
+      )}
     </main>
   );
-}
-
-function statusClass(code: number): string {
-  if (code >= 200 && code < 300) return "ok";
-  if (code >= 400 && code < 500) return "warn";
-  if (code >= 500) return "err";
-  return "ok";
 }

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "API 控制台",
-  description: "通用 API 调试控制台",
+  title: "Shop Demo",
+  description: "Order, stock and Alipay payment demo",
 };
 
 export default function RootLayout({
@@ -12,8 +13,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="zh-CN">
-      <body>{children}</body>
+    <html lang="en">
+      <body>
+        <nav className="topnav">
+          <span className="brand">ShopDemo</span>
+          <div className="links">
+            <Link href="/">Shop</Link>
+            <Link href="/orders">Orders</Link>
+            <Link href="/console">API Console</Link>
+          </div>
+        </nav>
+        {children}
+      </body>
     </html>
   );
 }
