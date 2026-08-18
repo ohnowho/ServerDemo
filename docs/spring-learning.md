@@ -132,6 +132,21 @@ backend/src/main/java/com/example/demo
 
 ## Part 1: IoC（容器与对象管理）
 
+```text
+Part 1 路径：IoC（容器与对象管理）
+├── 1.1 IoC 容器与依赖注入
+│   ├── 为什么需要（new 的问题）
+│   └── 容器 + DI 解决
+├── 1.2 把类变成 Bean
+│   ├── 注解声明（@Component/@Service/@Repository/@Controller/@Configuration）
+│   └── 编程式声明（@Configuration + @Bean）
+├── 1.3 构造器注入
+│   └── 为什么推荐（final / 可用 / 可测 / 明确）
+├── 1.4 高级技巧：注入一组 Bean
+│   └── PaymentGatewayRegistry（策略 + 开闭原则）
+└── 1.5 Bean 生命周期与作用域
+```
+
 ### 1.1 IoC 容器与依赖注入
 
 #### 1.1.1 问题：传统对象创建方式
@@ -290,6 +305,18 @@ flowchart LR
 
 ## Part 2: AOP（横切机制）
 
+```text
+Part 2 路径：AOP（横切机制）
+├── 2.1 AOP 是什么
+│   └── 切面 / 切点 / 通知 / 代理
+└── 2.2 事务 @Transactional（AOP 的典型应用）
+    ├── 为什么需要（要么全成要么全滚）
+    ├── 原理：代理 + AOP
+    ├── 常见属性（回滚 / readOnly / 传播 / 隔离）
+    ├── 传播行为（REQUIRED / 独立事务 / 每单一事务）
+    └── 三个必踩的坑（自调用 / private / 检查异常）
+```
+
 ### 2.1 AOP 是什么
 
 **AOP（Aspect Oriented Programming，面向切面编程）**：把"横切逻辑"从业务代码里抽出来，在运行期织入。
@@ -369,6 +396,15 @@ public List<Order> findExpiredPendingOrders() { ... }
 ---
 
 ## Part 3: MVC（Web 层）
+
+```text
+Part 3 路径：MVC（Web 层）
+├── 3.1 请求处理流程（DispatcherServlet → Controller → JSON）
+├── 3.2 Controller（映射注解 / 参数 / 状态码 / 最佳实践）
+├── 3.3 DTO（为什么要 DTO / 请求与响应 / 映射）
+├── 3.4 Validation（约束注解 / @Valid 触发 / 嵌套校验）
+└── 3.5 异常处理（BusinessException + GlobalExceptionHandler）
+```
 
 ### 3.1 请求处理流程
 
@@ -668,6 +704,17 @@ public class GlobalExceptionHandler {
 
 ## Part 4: Data（数据层）
 
+```text
+Part 4 路径：Data（数据层）
+├── 4.1 JPA / Hibernate / Spring Data JPA 三者定位
+├── 4.2 实体映射（@Entity / @Column / @Enumerated / 关联）
+├── 4.3 Repository（派生查询 / @Query / @Modifying / @Lock）
+├── 4.4 并发控制（原子 UPDATE / CAS 状态机 / 悲观锁）
+├── 4.5 持久化上下文与实体生命周期
+├── 4.6 懒加载与 N+1（open-in-view: false）
+└── 4.7 数据层配置与分页（ddl-auto / SQL 日志 / Page）
+```
+
 ### 4.1 JPA 与 Hibernate 的定位
 
 | 层 | 是什么 | 做什么 |
@@ -934,6 +981,17 @@ spring:
 
 ## Part 5: Security（安全）
 
+```text
+Part 5 路径：Security（安全）
+├── 5.1 认证 vs 授权
+├── 5.2 过滤器链与接入配置
+│   └── SecurityFilterChain / @PreAuthorize / 当前用户
+├── 5.3 JWT
+│   └── 结构 / 认证流程 / Access vs Refresh
+└── 5.4 OAuth2
+    └── 角色 / 授权码+PKCE / 方案对比
+```
+
 > 本项目**尚未引入** Spring Security（pom.xml 里没有对应 starter）。这一部分讲概念 + 引入后的写法，等你加认证时照着做。
 
 ### 5.1 认证与授权
@@ -1127,6 +1185,15 @@ sequenceDiagram
 ---
 
 ## Part 6: Boot（工程化骨架）
+
+```text
+Part 6 路径：Boot（工程化骨架）
+├── 6.1 Spring Boot 与自动配置（含注解归属表）
+├── 6.2 入口类与 starter（@SpringBootApplication / pom.xml）
+├── 6.3 配置与 Profile（@ConfigurationProperties / 环境变量）
+├── 6.4 日志（SLF4J + Logback / 级别 / logback-spring.xml）
+└── 6.5 测试（单元 / @WebMvcTest / @DataJpaTest / @SpringBootTest）
+```
 
 ### 6.1 Spring Boot 与自动配置
 
